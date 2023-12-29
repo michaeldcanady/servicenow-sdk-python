@@ -1,4 +1,3 @@
-import json
 from typing import (
     Dict,
     Optional,
@@ -53,6 +52,19 @@ class RequestBuilder[_E]():
 
         return self.send(HTTPMethod.GET, config)
 
+    def send_put(
+        self,
+        config: _RCT,
+    ) -> AbstractResponse[_E]:
+
+        return self.send(HTTPMethod.PUT, config)
+
+    def send_delete(
+        self,
+        config: _RCT,
+    ) -> AbstractResponse[_E]:
+        return self.send(HTTPMethod.DELETE, config)
+
     def send_post(
         self,
         config: _RCT,
@@ -73,7 +85,10 @@ class RequestBuilder[_E]():
             if config.headers:
                 req_info.headers.update(config.headers)
             if config.data:
-                req_info.content = bytes(json.dumps(config.data))
+                req_info.content = bytes(
+                    config.data.model_dump_json(),
+                    'utf-8',
+                )
 
         req_info.method = method
         req_info.uri.path = self.path_parameters

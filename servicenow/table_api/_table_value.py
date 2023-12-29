@@ -1,7 +1,7 @@
 from __future__ import annotations
 import json
 from typing import Any, Dict
-from pydantic import RootModel, field_validator
+from pydantic import RootModel, field_validator, ConfigDict, model_serializer
 from datetime import datetime
 
 DATE = "%Y-%m-%d"
@@ -10,6 +10,9 @@ DATETIME = f"{DATE} {TIME}"
 
 
 class TableValue(RootModel):
+
+    model_config = ConfigDict()
+
     @property
     def link(self) -> str:
         return self.root["link"]
@@ -73,3 +76,8 @@ class TableValue(RootModel):
         except Exception:
             pass
         return value
+
+    @model_serializer
+    def serialize(self) -> str:
+
+        return self.value

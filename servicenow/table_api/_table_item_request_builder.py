@@ -8,6 +8,9 @@ from servicenow.table_api._table_item_response import TableItemResponse
 from servicenow.table_api.request_configuration_table_item_get import (
     TableItemGetRequestConfigurations,
 )
+from servicenow.table_api.request_configuration_table_item_put import (
+    TableItemPutRequestConfigurations,
+)
 
 _E = TypeVar("_E", bound=TableEntry)
 
@@ -54,3 +57,25 @@ class TableItemRequestBuilder[_E](RequestBuilder):
         )
 
         return self.send_get(config)
+
+    def put(
+        self,
+        data: _E,
+        response_type: Type[TableItemResponse[_E]],
+        query: Optional[QueryParameter] = None,
+    ) -> TableItemResponse[_E]:
+        if not issubclass(response_type, TableItemResponse):
+            raise TypeError(
+                (
+                    "response_type must be subclass of "
+                    f"'{TableItemResponse[_E]}'"
+                )
+            )
+
+        config = TableItemPutRequestConfigurations[_E](
+            query=query,
+            data=data,
+            response=response_type(),
+        )
+
+        return self.send_put(config)
