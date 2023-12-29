@@ -1,0 +1,6 @@
+.pytest_cache/
+__pycache__/
+venv/
+.test/
+table_collection_testing.py
+table_item_testing.py
