@@ -53,6 +53,19 @@ class RequestBuilder[_E]():
 
         return self.send(HTTPMethod.GET, config)
 
+    def send_put(
+        self,
+        config: _RCT,
+    ) -> AbstractResponse[_E]:
+
+        return self.send(HTTPMethod.PUT, config)
+
+    def send_delete(
+        self,
+        config: _RCT,
+    ) -> AbstractResponse[_E]:
+        return self.send(HTTPMethod.DELETE, config)
+
     def send_post(
         self,
         config: _RCT,
