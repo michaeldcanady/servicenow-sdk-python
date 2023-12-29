@@ -1,4 +1,3 @@
-import json
 from typing import (
     Dict,
     Optional,
@@ -86,7 +85,10 @@ class RequestBuilder[_E]():
             if config.headers:
                 req_info.headers.update(config.headers)
             if config.data:
-                req_info.content = bytes(json.dumps(config.data))
+                req_info.content = bytes(
+                    config.data.model_dump_json(),
+                    'utf-8',
+                )
 
         req_info.method = method
         req_info.uri.path = self.path_parameters

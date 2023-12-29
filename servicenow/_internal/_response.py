@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Generic, TypeVar
+from typing import TypeVar
 from pydantic import BaseModel
 
 from servicenow._internal._page_result import PageResult
