@@ -1,4 +1,4 @@
-from servicenow.table_api._display_value import DisplayValue
+from servicenow_sdk_python.table_api._display_value import DisplayValue
 
 
 def test_display_value_none_str():

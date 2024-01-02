@@ -4,3 +4,4 @@ venv/
 .test/
 table_collection_testing.py
 table_item_testing.py
+dist/
