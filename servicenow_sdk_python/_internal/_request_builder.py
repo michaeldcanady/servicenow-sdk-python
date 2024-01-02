@@ -9,7 +9,7 @@ from servicenow_sdk_python._internal._http_method import HTTPMethod
 from servicenow_sdk_python._internal._request_information import RequestInformation
 from servicenow_sdk_python._internal._client import IClient
 from servicenow_sdk_python._internal._request_configuration import RequestConfiguration
-from servicenow_sdk_python._internal._response import AbstractResponse
+from servicenow_sdk_python._internal._abstract_item_response import AbstractItemResponse
 
 _E = TypeVar("_E")
 _RCT = TypeVar("_RCT", bound=RequestConfiguration)
@@ -37,7 +37,7 @@ class RequestBuilder(Generic[_E]):
         self,
         method: HTTPMethod,
         config: _RCT,
-    ) -> AbstractResponse[_E]:
+    ) -> AbstractItemResponse[_E]:
 
         req_info = self.to_request_information(method, config)
         return self.client.send(
@@ -49,27 +49,27 @@ class RequestBuilder(Generic[_E]):
     def send_get(
         self,
         config: _RCT,
-    ) -> AbstractResponse[_E]:
+    ) -> AbstractItemResponse[_E]:
 
         return self.send(HTTPMethod.GET, config)
 
     def send_put(
         self,
         config: _RCT,
-    ) -> AbstractResponse[_E]:
+    ) -> AbstractItemResponse[_E]:
 
         return self.send(HTTPMethod.PUT, config)
 
     def send_delete(
         self,
         config: _RCT,
-    ) -> AbstractResponse[_E]:
+    ) -> AbstractItemResponse[_E]:
         return self.send(HTTPMethod.DELETE, config)
 
     def send_post(
         self,
         config: _RCT,
-    ) -> AbstractResponse[_E]:
+    ) -> AbstractItemResponse[_E]:
         return self.send(HTTPMethod.POST, config)
 
     def to_request_information(
