@@ -3,10 +3,8 @@ from servicenow_sdk_python._internal.credential._credential_basic_interactive im
     InteractiveBasicCredential,
 )
 
-# TODO: Find a way to properly secure password?
 
-
-class SecureString(str):
+class SecureString(str):  # TODO: Find a way to properly secure password?
 
     def __repr__(self) -> str:
         return "[secure]"
