@@ -2,7 +2,10 @@ from typing import Optional, Union
 from httpx import Headers, Request
 
 from servicenow_sdk_python._internal._http_method import HTTPMethod
-from servicenow_sdk_python._internal._uri_information import URIInformation, _RAW_URL_KEY
+from servicenow_sdk_python._internal._uri_information import (
+    URIInformation,
+    _RAW_URL_KEY,
+)
 from servicenow_sdk_python._internal._collection import Collection
 
 

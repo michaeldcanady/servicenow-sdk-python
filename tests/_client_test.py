@@ -1,18 +1,25 @@
 import pytest
 from httpx import Headers, Request
 
-from servicenow_sdk_python._internal._request_information import RequestInformation
+from servicenow_sdk_python._internal._request_information import (
+    RequestInformation
+)
 from servicenow_sdk_python._internal._uri_information import URIInformation
 from servicenow_sdk_python._internal._http_method import HTTPMethod
 from servicenow_sdk_python._internal._collection import Collection
 
-from servicenow_sdk_python.credential import UsernamePasswordCredential
+from servicenow_sdk_python.credential import (
+    UsernamePasswordCredential,
+    SecureString,
+)
 from servicenow_sdk_python._client import ServiceNowClient
 
 
 @pytest.fixture
-def sn_client():
-    credential = UsernamePasswordCredential(username="user", password="pass")
+def sn_client(pytestconfig):
+    credential = UsernamePasswordCredential()
+    credential.username = SecureString(pytestconfig.getoption("username"))
+    credential.password = SecureString(pytestconfig.getoption("password"))
     return ServiceNowClient(
         credential=credential,
         instance="test.service-now.com/api",

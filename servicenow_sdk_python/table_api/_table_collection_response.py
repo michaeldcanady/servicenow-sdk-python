@@ -2,14 +2,16 @@ import re
 from typing import Generic, List, Optional, TypeVar
 from httpx import Headers
 
-from servicenow_sdk_python._internal._response import AbstractResponse
+from servicenow_sdk_python._internal._abstract_collection_response import (
+    ICollectionResponse
+)
 from servicenow_sdk_python._internal._page_result import PageResult
 
 
 _E = TypeVar("_E")
 
 
-class TableCollectionResponse(AbstractResponse[_E], Generic[_E]):
+class TableCollectionResponse(ICollectionResponse[_E], Generic[_E]):
 
     result: List[_E] = []
     next_link: Optional[str] = None
