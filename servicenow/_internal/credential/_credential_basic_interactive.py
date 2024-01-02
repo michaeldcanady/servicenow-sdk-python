@@ -1,23 +1,29 @@
+from dataclasses import dataclass
 from typing import Callable, Tuple
 from servicenow._internal.credential._abstract_credential_basic import (
     AbstractBasicCredential
 )
 
 
+@dataclass
 class InteractiveBasicCredential(AbstractBasicCredential):
+    """
+    This class inherits from the AbstractBasicCredential class and implements
+    the _request_credentials method.
+    It uses a callback function to request credentials.
+    """
 
-    _callback: Callable[[], Tuple[str, str]]
-
-    def __init__(self, callback: Callable[[], Tuple[str, str]]) -> None:
-        super().__init__()
-
-        self._callback = callback
+    callback: Callable[[], Tuple[str, str]]
+    """
+    A callback function that returns the username and password when called.
+    """
 
     def _request_credentials(self) -> Tuple[str, str]:
-        """_summary_
+        """
+        This method calls the callback function to get the username and
+        password.
 
         Returns:
-            Tuple[str, str]: _description_
+            Tuple[str, str]: The username and password.
         """
-
-        return self._callback()
+        return self.callback()
