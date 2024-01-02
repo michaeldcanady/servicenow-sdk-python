@@ -11,7 +11,7 @@ class IClient(ABC):
     def to_request(self, req_info: RequestInformation) -> Request: ...
 
     @abstractmethod
-    async def send(
+    def send(
         self,
         req_info: RequestInformation,
         error_mapping,

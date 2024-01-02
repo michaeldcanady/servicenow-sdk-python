@@ -1,23 +1,59 @@
+"""Houses Service-Now Client
+"""
+
 from typing import Any, TypeVar, Protocol, Union
-from servicenow._internal.credential._abstract_credential import (
-    AbstractCredential
-)
 from httpx import Client, Headers, Request, Response
+from pydantic import BaseModel
 
 from servicenow._internal._client import IClient
 from servicenow._internal._request_information import RequestInformation
+from servicenow._internal.credential._abstract_credential import (
+    AbstractCredential
+)
 
-_A = TypeVar("_A")
+_A = TypeVar("_A", bound=BaseModel)
 
 
 class SupportsParseHeaders(Protocol):
+    """Class that supports header parsing
+    """
 
-    def parse_headers(self, headers: Headers) -> None: ...
+    def parse_headers(self, headers: Headers) -> None:
+        """Parses the provided headers
+
+        Args:
+            headers (Headers): The response headers
+        """
 
 
 class SupportsModelValidationJSON(Protocol[_A]):
+    """Class that supports model validation JSON
+    """
 
-    def model_validate_json() -> _A: ...
+    @classmethod
+    def model_validate_json(
+        cls: type[_A],
+        json_data: str | bytes | bytearray,
+        *,
+        strict: bool | None = None,
+        context: dict[str, Any] | None = None,
+    ) -> _A:
+        """Usage docs:
+        https://docs.pydantic.dev/2.5/concepts/json/#json-parsing
+
+        Validate the given JSON data against the Pydantic model.
+
+        Args:
+            json_data: The JSON data to validate.
+            strict: Whether to enforce types strictly.
+            context: Extra variables to pass to the validator.
+
+        Returns:
+            The validated Pydantic model.
+
+        Raises:
+            ValueError: If `json_data` is not a JSON string.
+        """
 
 
 _R = TypeVar(
@@ -27,6 +63,8 @@ _R = TypeVar(
 
 
 class ServiceNowClient(IClient):
+    """Service-Now HTTP Client
+    """
 
     base_url: str
     credential: AbstractCredential
