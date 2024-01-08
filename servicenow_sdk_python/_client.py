@@ -5,9 +5,9 @@ from typing import Any, TypeVar, Protocol, Union
 from httpx import Client, Headers, Request, Response
 from pydantic import BaseModel
 
-from servicenow_sdk_python._internal._client import IClient
-from servicenow_sdk_python._internal._request_information import (
-    RequestInformation
+from servicenow_sdk_python._internal import (
+    IClient,
+    RequestInformation,
 )
 from servicenow_sdk_python._internal.credential._abstract_credential import (
     AbstractCredential
@@ -16,7 +16,7 @@ from servicenow_sdk_python._internal.credential._abstract_credential import (
 _A = TypeVar("_A", bound=BaseModel)
 
 
-class SupportsParseHeaders(Protocol):
+class _SupportsParseHeaders(Protocol):
     """Class that supports header parsing
     """
 
@@ -28,7 +28,7 @@ class SupportsParseHeaders(Protocol):
         """
 
 
-class SupportsModelValidationJSON(Protocol[_A]):
+class _SupportsModelValidationJSON(Protocol[_A]):
     """Class that supports model validation JSON
     """
 
@@ -60,17 +60,25 @@ class SupportsModelValidationJSON(Protocol[_A]):
 
 _R = TypeVar(
     "_R",
-    bound=Union[SupportsParseHeaders, SupportsModelValidationJSON[Any]]
+    bound=Union[_SupportsParseHeaders, _SupportsModelValidationJSON[Any]]
 )
 
 
 class ServiceNowClient(IClient):
-    """Service-Now HTTP Client
+    """Service-Now HTTP Client.
     """
 
     base_url: str
+    """The base URL for the Service-Now API.
+    """
+
     credential: AbstractCredential
+    """The credentials for the Service-Now API.
+    """
+
     _client: Client
+    """The HTTP client.
+    """
 
     def __init__(
         self,
@@ -95,13 +103,17 @@ class ServiceNowClient(IClient):
         super().__init__()
 
     def to_request(self, req_info: RequestInformation) -> Request:
-        """Converts req info to a Request
+        """
+        Converts request information to a Request.
 
         Args:
-            req_info (RequestInformation): The Request Information
+            req_info (RequestInformation): The request information.
 
         Returns:
             Request: The generated Request.
+
+        Raises:
+            TypeError: If `req_info` is not of type RequestInformation.
         """
 
         if not isinstance(req_info, RequestInformation):
@@ -122,6 +134,20 @@ class ServiceNowClient(IClient):
         error_mapping,
         response_type: _R,
     ) -> _R:
+        """
+        Sends a request and returns the response.
+
+        Args:
+            req_info (RequestInformation): The request information.
+            error_mapping: The error mapping.
+            response_type (_R): The type of the response.
+
+        Returns:
+            _R: The response.
+
+        Raises:
+            Exception: If the response is an error.
+        """
 
         request = self.to_request(req_info)
 

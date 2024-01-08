@@ -91,7 +91,7 @@ class AbstractPageIterator(ABC, Generic[_E]):
         return resp.to_page()
 
     @abstractmethod
-    def _fetch_page(self, uri: str) -> AbstractItemResponse[_E]:
+    def _fetch_page(self, uri: str) -> ICollectionResponse[_E]:
         return NotImplemented
 
     def _enumerate(self, callback: Callable[[_E], bool]) -> bool:

@@ -12,23 +12,36 @@ _E = TypeVar("_E")
 
 
 class TableCollectionResponse(ICollectionResponse[_E], Generic[_E]):
+    """A class used to represent the response of a table collection.
+    """
 
     result: List[_E] = []
+    """The result of the table collection."""
+
     next_link: Optional[str] = None
+    """The next link of the table collection."""
+
     prev_link: Optional[str] = None
+    """The previous link of the table collection."""
+
     first_link: Optional[str] = None
+    """The first link of the table collection."""
+
     last_link: Optional[str] = None
+    """The last link of the table collection."""
 
     def parse_headers(self, headers: Headers) -> None:
-        """_summary_
+        """Parses the headers.
 
         Args:
-            headers (Headers): _description_
+            headers (Headers): The headers to parse.
         """
 
         regex = re.compile('<([^>]+)>;rel="([^"]+)"')
 
-        links_header = headers["Link"]
+        links_header = headers.get("Link", None)
+        if links_header is None:
+            return
 
         link_matches = regex.findall(links_header, -1)
 
@@ -47,10 +60,11 @@ class TableCollectionResponse(ICollectionResponse[_E], Generic[_E]):
                     self.last_link = link
 
     def to_page(self) -> PageResult[_E]:
-        """_summary_
+        """
+        Converts the table collection response to a page result.
 
         Returns:
-            PageResult[_E]: _description_
+            PageResult[_E]: The page result.
         """
 
         return PageResult(
