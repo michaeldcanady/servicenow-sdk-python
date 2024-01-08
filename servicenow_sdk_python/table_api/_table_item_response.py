@@ -9,7 +9,17 @@ _E = TypeVar("_E", bound=TableEntry)
 
 
 class TableItemResponse(BaseModel, Generic[_E]):
+    """A class that represents the response from a
+    table item request in the ServiceNow SDK.
+    """
+
     result: _E = None
+    """The result of the table item request."""
 
     def parse_headers(self, headers: Headers) -> None:
-        pass
+        """
+        Parses the headers from the response.
+
+        Args:
+            headers (Headers): The headers from the response.
+        """
