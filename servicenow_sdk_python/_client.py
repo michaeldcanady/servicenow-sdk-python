@@ -12,6 +12,11 @@ from servicenow_sdk_python._internal import (
 from servicenow_sdk_python._internal.credential._abstract_credential import (
     AbstractCredential
 )
+from servicenow_sdk_python._internal._servicenow_error import (
+    ServiceNowError,
+    AuthError,
+)
+from servicenow_sdk_python._internal._error_map import ErrorMap
 
 _A = TypeVar("_A", bound=BaseModel)
 
@@ -153,9 +158,20 @@ class ServiceNowClient(IClient):
 
         raw_resp: Response = self._client.send(request)
 
-        if raw_resp.is_error:
-            raise Exception("error")
+        raw_resp = self._to_error(raw_resp)
         resp: _R = response_type.model_validate_json(raw_resp.text)
         resp.parse_headers(raw_resp.headers)
 
         return resp
+
+    def _to_error(self, resp: Response) -> Response:
+
+        if not resp.is_error:
+            return resp
+
+        error_map = ErrorMap()
+        error_map.set("401", AuthError)
+
+        _err_type = error_map.get(resp.status_code)
+
+        raise _err_type.model_validate_json(resp.text).exception()
