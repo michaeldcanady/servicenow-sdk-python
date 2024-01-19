@@ -1,7 +1,21 @@
+from __future__ import annotations
 from pydantic import BaseModel
 
 
-class Error(BaseModel):
+class ServiceNowError(Exception):
+
+    def __init__(self, service_error: _ServiceNowError) -> None:
+        super().__init__(None)
+        self._service_error = service_error
+
+    def __str__(self) -> str:
+        return str(self._service_error)
+
+class AuthError(ServiceNowError):
+    pass
+
+
+class _Error(BaseModel):
 
     detail: str
     message: str
@@ -10,19 +24,21 @@ class Error(BaseModel):
         return f"detail: {self.detail}, message: {self.message}"
 
 
-class ServiceNowError(BaseModel):
+class _ServiceNowError(BaseModel):
 
-    error: Error
+    error: _Error
     status: str
 
-    def exception(self) -> Exception:
+    def exception(self) -> ServiceNowError:
 
-        return Exception(str(self))
+        return ServiceNowError(str(self))
 
     def __str__(self) -> str:
 
         return f"error: {self.error}, status: {self.status}"
 
 
-class AuthError(ServiceNowError):
-    pass
+class _AuthError(_ServiceNowError):
+
+    def exception(self) -> AuthError:
+        return AuthError(str(self))

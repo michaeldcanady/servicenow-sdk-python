@@ -1,6 +1,6 @@
 import re
 from typing import Type
-from servicenow_sdk_python._internal._servicenow_error import ServiceNowError
+from servicenow_sdk_python._internal._servicenow_error import _ServiceNowError
 
 
 class ErrorMap:
@@ -11,7 +11,7 @@ class ErrorMap:
 
         self.__dict__ = {}
 
-    def set(self, key: str, value: ServiceNowError) -> None:
+    def set(self, key: str, value: _ServiceNowError) -> None:
         """_summary_
 
         Args:
@@ -23,7 +23,7 @@ class ErrorMap:
 
         self.__dict__[transformed_key] = value
 
-    def get(self, status_code: int) -> Type[ServiceNowError]:
+    def get(self, status_code: int) -> Type[_ServiceNowError]:
         """_summary_
 
         Args:
@@ -38,4 +38,4 @@ class ErrorMap:
         for key, value in self.__dict__.items():
             if re.match(key, code_str):
                 return value
-        return ServiceNowError
+        return _ServiceNowError

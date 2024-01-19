@@ -63,7 +63,7 @@ class AbstractPageIterator(ABC, Generic[_E]):
             if not keep_iterating:
                 return
 
-            if self.current_page.prev_link == "":
+            if self.current_page.prev_link in ["", None]:
                 return
 
             self.prev()
@@ -79,7 +79,7 @@ class AbstractPageIterator(ABC, Generic[_E]):
             if not keep_iterating:
                 return
 
-            if self.current_page.next_link == "":
+            if self.current_page.next_link in ["", None]:
                 return
 
             self.next()

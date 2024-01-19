@@ -13,8 +13,8 @@ from servicenow_sdk_python._internal.credential._abstract_credential import (
     AbstractCredential
 )
 from servicenow_sdk_python._internal._servicenow_error import (
-    ServiceNowError,
-    AuthError,
+    _ServiceNowError,
+    _AuthError,
 )
 from servicenow_sdk_python._internal._error_map import ErrorMap
 
@@ -170,7 +170,7 @@ class ServiceNowClient(IClient):
             return resp
 
         error_map = ErrorMap()
-        error_map.set("401", AuthError)
+        error_map.set("401", _AuthError)
 
         _err_type = error_map.get(resp.status_code)
 
