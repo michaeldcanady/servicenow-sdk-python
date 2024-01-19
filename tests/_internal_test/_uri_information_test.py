@@ -1,7 +1,7 @@
 import pytest
 
-from servicenow._internal._collection import Collection
-from servicenow._internal._uri_information import URIInformation
+from servicenow_sdk_python._internal._collection import Collection
+from servicenow_sdk_python._internal._uri_information import URIInformation
 
 
 @pytest.fixture

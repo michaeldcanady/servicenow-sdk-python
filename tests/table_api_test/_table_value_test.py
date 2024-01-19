@@ -1,4 +1,4 @@
-from servicenow.table_api._table_value import TableValue
+from servicenow_sdk_python.table_api._table_value import TableValue
 
 
 def test_table_value_all():
@@ -31,8 +31,8 @@ def test_table_value_display_value():
 def test_table_value_display_value_exclude_ref_link():
     test_data = "display value"
 
-    value = TableValue(**test_data)
+    value = TableValue(test_data)
 
     assert value.link is None
-    assert value.value is None
-    assert value.display_value == "display value"
+    assert value.value == "display value"
+    assert value.display_value is None
