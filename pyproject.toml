@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "servicenow-sdk-python"
+version = "0.1.0"
+description = ""
+authors = ["Michael Canady <michaeldcanady+github@gmail.com>"]
+readme = "README.md"
+packages = [{include = "servicenow"}]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.12"
+httpx = "^0.27.0"
+pydantic = "^2.7.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
