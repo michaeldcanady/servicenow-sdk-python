@@ -1,4 +1,4 @@
-from servicenow_sdk_python._internal._http_method import HTTPMethod
+from servicenow._internal._http_method import HTTPMethod
 
 
 def test_http_method_none():

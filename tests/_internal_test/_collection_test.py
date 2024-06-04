@@ -1,4 +1,4 @@
-from servicenow_sdk_python._internal._collection import Collection
+from servicenow._internal._collection import Collection
 
 
 def test_collection_init():
