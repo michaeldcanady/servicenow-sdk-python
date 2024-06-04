@@ -23,6 +23,7 @@ jobs:
         python -m pip install wheel
         pip install pylint
         pip install .
+        pip uninstall -y servicenow-sdk-python
     - name: Analysing the code with pylint
       run: |
         pylint $(git ls-files '*.py')
