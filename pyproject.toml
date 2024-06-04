@@ -2,7 +2,7 @@
 name = "servicenow-sdk-python"
 version = "0.0.0"
 description = ""
-authors = ["Michael Canady <michaeldcanady+github@gmail.com>"]
+authors = ["Michael Canady <michaeldcanady@gmail.com>"]
 readme = "README.md"
 packages = [{include = "servicenow"}]
 
