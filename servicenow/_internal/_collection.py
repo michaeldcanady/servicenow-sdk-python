@@ -1,11 +1,13 @@
-from typing import Dict, Iterator, TypeVar
+from typing import Dict, TypeVar
 
 _VT = TypeVar("_VT")
 
 
 class Collection(Dict[str, _VT]):
+    """Base collection type
+    """
 
-    def __init__(self, **kwargs: str) -> None:
+    def __init__(self, **kwargs) -> None:
 
         super().__init__()
 
@@ -26,9 +28,3 @@ class Collection(Dict[str, _VT]):
 
     def __delitem__(self, __key: str) -> None:
         return super().__delitem__(__key)
-
-    def __iter__(self) -> Iterator[str]:
-        return super().__iter__()
-
-    def __len__(self) -> int:
-        return super().__len__()

@@ -1,7 +1,7 @@
 """Houses Service-Now Client
 """
 
-from typing import Any, TypeVar, Protocol, Union
+from typing import Any, Type, TypeVar, Protocol, Union
 from httpx import Client, Headers, Request, Response
 from pydantic import BaseModel
 
@@ -12,8 +12,10 @@ from servicenow._internal import (
 from servicenow._internal.credential._abstract_credential import (
     AbstractCredential
 )
+from servicenow._internal.api_error import APIError
 
 _A = TypeVar("_A", bound=BaseModel)
+_A_co = TypeVar("_A_co", bound=BaseModel, covariant=True)
 
 
 class _SupportsParseHeaders(Protocol):
@@ -28,7 +30,7 @@ class _SupportsParseHeaders(Protocol):
         """
 
 
-class _SupportsModelValidationJSON(Protocol[_A]):
+class _SupportsModelValidationJSON(Protocol[_A_co]):
     """Class that supports model validation JSON
     """
 
@@ -58,13 +60,17 @@ class _SupportsModelValidationJSON(Protocol[_A]):
         """
 
 
+class _ReponseProtocol(_SupportsModelValidationJSON, _SupportsParseHeaders):
+    pass
+
+
 _R = TypeVar(
     "_R",
     bound=Union[_SupportsParseHeaders, _SupportsModelValidationJSON[Any]]
 )
 
 
-class ServiceNowClient(IClient):
+class ServiceNowClient(IClient):  # pylint:disable=too-few-public-methods
     """Service-Now HTTP Client.
     """
 
@@ -103,18 +109,6 @@ class ServiceNowClient(IClient):
         super().__init__()
 
     def to_request(self, req_info: RequestInformation) -> Request:
-        """
-        Converts request information to a Request.
-
-        Args:
-            req_info (RequestInformation): The request information.
-
-        Returns:
-            Request: The generated Request.
-
-        Raises:
-            TypeError: If `req_info` is not of type RequestInformation.
-        """
 
         if not isinstance(req_info, RequestInformation):
             raise TypeError("req_info must be of type RequestInformation")
@@ -132,21 +126,21 @@ class ServiceNowClient(IClient):
         self,
         req_info: RequestInformation,
         error_mapping,
-        response_type: _R,
-    ) -> _R:
+        response_type: Type[_ReponseProtocol],
+    ) -> _ReponseProtocol:
         """
         Sends a request and returns the response.
 
         Args:
             req_info (RequestInformation): The request information.
             error_mapping: The error mapping.
-            response_type (_R): The type of the response.
+            response_type Type[_ReponseProtocol]: The type of the response.
 
         Returns:
-            _R: The response.
+            _ReponseProtocol: The response.
 
         Raises:
-            Exception: If the response is an error.
+            APIError: If the response is an error.
         """
 
         request = self.to_request(req_info)
@@ -154,8 +148,8 @@ class ServiceNowClient(IClient):
         raw_resp: Response = self._client.send(request)
 
         if raw_resp.is_error:
-            raise Exception("error")
-        resp: _R = response_type.model_validate_json(raw_resp.text)
+            raise APIError("error")
+        resp: _ReponseProtocol = response_type.model_validate_json(raw_resp.text)
         resp.parse_headers(raw_resp.headers)
 
         return resp

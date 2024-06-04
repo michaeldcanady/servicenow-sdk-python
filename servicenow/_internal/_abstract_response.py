@@ -7,12 +7,14 @@ from pydantic import BaseModel
 _E = TypeVar("_E")
 
 
-class AbstractResponse(BaseModel, ABC, Generic[_E]):
+class AbstractResponse(BaseModel, ABC, Generic[_E]):  # pylint:disable=too-few-public-methods
+    """The base for all responses
+    """
 
     @abstractmethod
     def parse_headers(self, headers: Headers) -> None:
-        """_summary_
+        """Parses response headers
 
         Args:
-            headers (Headers): _description_
+            headers (Headers): The reponse headers
         """

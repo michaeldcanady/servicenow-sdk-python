@@ -1,3 +1,6 @@
+"""Internal classes, functions, and attributes not provided in the public API
+"""
+
 from servicenow._internal._abstract_item_response import (
     AbstractItemResponse
 )
