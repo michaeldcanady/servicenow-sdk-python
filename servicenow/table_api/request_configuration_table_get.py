@@ -1,8 +1,10 @@
 from dataclasses import dataclass
-from typing import Any, Dict, Optional, TypeVar
+from typing import Any, Dict, Generic, Optional, TypeVar
 from httpx import Headers
 
-from servicenow._internal._request_configuration import RequestConfiguration
+from servicenow._internal._request_configuration import (
+    RequestConfiguration
+)
 
 from servicenow.table_api._table_entry import TableEntry
 from servicenow.table_api._table_collection_response import (
@@ -17,7 +19,10 @@ _E = TypeVar("_E", bound=TableEntry)
 
 
 @dataclass
-class TableCollectionGetRequestConfigurations[_E](RequestConfiguration):
+class TableCollectionGetRequestConfigurations(
+    RequestConfiguration,
+    Generic[_E],
+):
     headers: Optional[Headers] = None
     query: TableRequestBuilderGetQueryParameters = None
     data: Any = None

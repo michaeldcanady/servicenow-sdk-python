@@ -1,36 +1,90 @@
-from typing import Any, TypeVar, Protocol, Union
+"""Houses Service-Now Client
+"""
+
+from typing import Any, Type, TypeVar, Protocol, Union
+from httpx import Client, Headers, Request, Response
+from pydantic import BaseModel
+
+from servicenow._internal import (
+    IClient,
+    RequestInformation,
+)
 from servicenow._internal.credential._abstract_credential import (
     AbstractCredential
 )
-from httpx import Client, Headers, Request, Response
+from servicenow._internal.api_error import APIError
 
-from servicenow._internal._client import IClient
-from servicenow._internal._request_information import RequestInformation
-
-_A = TypeVar("_A")
+_A = TypeVar("_A", bound=BaseModel)
+_A_co = TypeVar("_A_co", bound=BaseModel, covariant=True)
 
 
-class SupportsParseHeaders(Protocol):
+class _SupportsParseHeaders(Protocol):
+    """Class that supports header parsing
+    """
 
-    def parse_headers(self, headers: Headers) -> None: ...
+    def parse_headers(self, headers: Headers) -> None:
+        """Parses the provided headers
+
+        Args:
+            headers (Headers): The response headers
+        """
 
 
-class SupportsModelValidationJSON(Protocol[_A]):
+class _SupportsModelValidationJSON(Protocol[_A_co]):
+    """Class that supports model validation JSON
+    """
 
-    def model_validate_json() -> _A: ...
+    @classmethod
+    def model_validate_json(
+        cls: type[_A],
+        json_data: str | bytes | bytearray,
+        *,
+        strict: bool | None = None,
+        context: dict[str, Any] | None = None,
+    ) -> _A:
+        """Usage docs:
+        https://docs.pydantic.dev/2.5/concepts/json/#json-parsing
+
+        Validate the given JSON data against the Pydantic model.
+
+        Args:
+            json_data: The JSON data to validate.
+            strict: Whether to enforce types strictly.
+            context: Extra variables to pass to the validator.
+
+        Returns:
+            The validated Pydantic model.
+
+        Raises:
+            ValueError: If `json_data` is not a JSON string.
+        """
+
+
+class _ReponseProtocol(_SupportsModelValidationJSON, _SupportsParseHeaders):
+    pass
 
 
 _R = TypeVar(
     "_R",
-    bound=Union[SupportsParseHeaders, SupportsModelValidationJSON[Any]]
+    bound=Union[_SupportsParseHeaders, _SupportsModelValidationJSON[Any]]
 )
 
 
-class ServiceNowClient(IClient):
+class ServiceNowClient(IClient):  # pylint:disable=too-few-public-methods
+    """Service-Now HTTP Client.
+    """
 
     base_url: str
+    """The base URL for the Service-Now API.
+    """
+
     credential: AbstractCredential
+    """The credentials for the Service-Now API.
+    """
+
     _client: Client
+    """The HTTP client.
+    """
 
     def __init__(
         self,
@@ -55,14 +109,6 @@ class ServiceNowClient(IClient):
         super().__init__()
 
     def to_request(self, req_info: RequestInformation) -> Request:
-        """Converts req info to a Request
-
-        Args:
-            req_info (RequestInformation): The Request Information
-
-        Returns:
-            Request: The generated Request.
-        """
 
         if not isinstance(req_info, RequestInformation):
             raise TypeError("req_info must be of type RequestInformation")
@@ -80,16 +126,30 @@ class ServiceNowClient(IClient):
         self,
         req_info: RequestInformation,
         error_mapping,
-        response_type: _R,
-    ) -> _R:
+        response_type: Type[_ReponseProtocol],
+    ) -> _ReponseProtocol:
+        """
+        Sends a request and returns the response.
+
+        Args:
+            req_info (RequestInformation): The request information.
+            error_mapping: The error mapping.
+            response_type Type[_ReponseProtocol]: The type of the response.
+
+        Returns:
+            _ReponseProtocol: The response.
+
+        Raises:
+            APIError: If the response is an error.
+        """
 
         request = self.to_request(req_info)
 
         raw_resp: Response = self._client.send(request)
 
         if raw_resp.is_error:
-            raise Exception("error")
-        resp: _R = response_type.model_validate_json(raw_resp.text)
+            raise APIError("error")
+        resp: _ReponseProtocol = response_type.model_validate_json(raw_resp.text)
         resp.parse_headers(raw_resp.headers)
 
         return resp

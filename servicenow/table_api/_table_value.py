@@ -1,12 +1,11 @@
 from __future__ import annotations
 import json
 from typing import Any, Dict
-from pydantic import RootModel, field_validator, ConfigDict, model_serializer
 from datetime import datetime
 
-DATE = "%Y-%m-%d"
-TIME = "%H:%M:%S"
-DATETIME = f"{DATE} {TIME}"
+from pydantic import RootModel, field_validator, ConfigDict, model_serializer
+
+from servicenow._internal.const import DATETIME
 
 
 class TableValue(RootModel):
@@ -26,11 +25,13 @@ class TableValue(RootModel):
         return self.root["value"]
 
     @field_validator("*", mode="before")
+    @classmethod
     def val(cls, v, field):
         v = cls._initialize_dict(v)
         return v
 
     @field_validator("*", mode="after")
+    @classmethod
     def val1(cls, v: Dict, field):
         v = cls._process_dict(v)
         return v
@@ -80,4 +81,7 @@ class TableValue(RootModel):
     @model_serializer
     def serialize(self) -> str:
 
+        match self.value:
+            case datetime():
+                return self.value.strftime(DATETIME)
         return self.value

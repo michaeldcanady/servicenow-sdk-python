@@ -1,21 +1,23 @@
 from abc import ABC, abstractmethod
-from typing import Callable, TypeVar
+from typing import Callable, Generic, TypeVar
 
 from servicenow._internal._page_result import PageResult
 from servicenow._internal._client import IClient
-from servicenow._internal._response import AbstractResponse
+from servicenow._internal._abstract_collection_response import (
+    ICollectionResponse
+)
 
 _E = TypeVar("_E")
 
 
-class AbstractPageIterator[_E](ABC):
+class AbstractPageIterator(ABC, Generic[_E]):
     current_page: PageResult[_E]
     client: IClient
     pause_index: int
 
     def __init__(
         self,
-        current_page: AbstractResponse[_E],
+        current_page: ICollectionResponse[_E],
         client: IClient,
     ) -> None:
         super().__init__()
@@ -89,7 +91,7 @@ class AbstractPageIterator[_E](ABC):
         return resp.to_page()
 
     @abstractmethod
-    def _fetch_page(self, uri: str) -> AbstractResponse[_E]:
+    def _fetch_page(self, uri: str) -> ICollectionResponse[_E]:
         return NotImplemented
 
     def _enumerate(self, callback: Callable[[_E], bool]) -> bool:
