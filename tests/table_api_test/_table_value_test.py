@@ -1,4 +1,4 @@
-from servicenow_sdk_python.table_api._table_value import TableValue
+from servicenow.table_api._table_value import TableValue
 
 
 def test_table_value_all():

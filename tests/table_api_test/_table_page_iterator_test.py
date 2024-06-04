@@ -1,6 +1,6 @@
-from servicenow_sdk_python.table_api._table_page_iterator import TablePageIterator
-from servicenow_sdk_python.table_api._table_entry import TableEntry
-from servicenow_sdk_python.table_api._table_collection_response import TableCollectionResponse
+from servicenow.table_api._table_page_iterator import TablePageIterator
+from servicenow.table_api._table_entry import TableEntry
+from servicenow.table_api._table_collection_response import TableCollectionResponse
 
 
 def example_collection_resp() -> TableCollectionResponse[TableEntry]:

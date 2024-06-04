@@ -1,6 +1,6 @@
-from servicenow_sdk_python.table_api._display_value import DisplayValue
-from servicenow_sdk_python.table_api._view import View
-from servicenow_sdk_python.table_api._query_params_table_request_builder_get import (
+from servicenow.table_api._display_value import DisplayValue
+from servicenow.table_api._view import View
+from servicenow.table_api._query_params_table_request_builder_get import (
     TableRequestBuilderGetQueryParameters,
 )
 
