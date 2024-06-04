@@ -11,6 +11,8 @@ _R = TypeVar("_R")
 
 
 class IClient(ABC):
+    """The base for clients
+    """
 
     @abstractmethod
     def to_request(self, req_info: RequestInformation) -> Request:

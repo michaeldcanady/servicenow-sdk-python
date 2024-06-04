@@ -99,4 +99,4 @@ class CurrentUserRequestBuilder(RequestBuilder[CurrentUser]):
             response=CurrentUserItemResponse()
         )
 
-        return self.send_get(config)
+        return self.send_get(config)  # type:ignore
